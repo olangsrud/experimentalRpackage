@@ -3,7 +3,7 @@
 #' @param n number of observations
 #' @param b scale parameter(s)
 #'
-#' @return
+#' @return random deviates
 #' @export
 #'
 #' @examples

@@ -8,7 +8,7 @@ Author: Øyvind Langsrud [aut, cre]
 Maintainer: Øyvind Langsrud <oyl@ssb.no>
 Depends: R (>= 3.0.0), Matrix, easySdcTable, RegSDC
 Imports: SSBtools
-Description: An experimental R package containing experimental/early R functions
+Description: This is an experimental R package containing experimental/early R functions.
 License: Apache License 2.0 | file LICENSE
 LazyData: TRUE
 Encoding: UTF-8
