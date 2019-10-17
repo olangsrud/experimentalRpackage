@@ -11,6 +11,9 @@ Lap(n = 1, b = 1)
 
 \item{b}{scale parameter(s)}
 }
+\value{
+random deviates
+}
 \description{
 Laplace noise
 }
