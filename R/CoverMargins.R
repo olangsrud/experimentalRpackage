@@ -63,3 +63,50 @@ Aterms <- function(x) { # x = attr(terms.formula(~a*B*C + c*D),'factors')
   }
 }
 
+
+
+#' Extract two sets of model terms that cover two formulas 
+#' 
+#' One formula for cells to be perturbed and one formula for cells to be exact
+#' 
+#' The function make use of \code{\link{CoverMargins}}. Thus, hierarchical relationships seen in the data is considered. 
+#' Each output element can be input to \code{\link{Terms2formula}}.
+#'
+#' @param data Input data as a data frame (inner cells)
+#' @param formula Model formula defining cells to be perturbed 
+#' @param formulaExact Model formula defining cells to be exact
+#' @param intercept Whether to include intercept
+#' @param interceptExact Whether to include intercept
+#' @param coverMargins Whether to extract only the covering terms
+#'
+#' @return List of two sets of model terms
+#' 
+#' @importFrom CalibrateSSB MatchVarNames
+#' @export
+#'
+#' @examples
+#' z3 <- EasyData("z3")
+#' CoverMarginsExact(z3, ~region + kostragr * hovedint)
+#' CoverMarginsExact(z3, ~region + kostragr * hovedint * mnd, ~kostragr * hovedint)
+#' CoverMarginsExact(z3, ~region + kostragr * hovedint * mnd, ~kostragr * hovedint + mnd)
+#' CoverMarginsExact(z3, ~region, ~kostragr * hovedint, TRUE, FALSE)
+#' CoverMarginsExact(z3, ~region * mnd, ~kostragr * hovedint, coverMargins = FALSE)
+#' CoverMarginsExact(z3, ~region, interceptExact = TRUE)  
+CoverMarginsExact <- function(data, formula, formulaExact = NULL, 
+                              intercept = FALSE, interceptExact = !is.null(formulaExact), coverMargins = TRUE) {
+  if (coverMargins) 
+    coverTable <- FALSE else coverTable <- NA
+    c1 <- CoverMargins(data, formula, coverTable)
+    if (intercept) 
+      c1 <- c("(Intercept)", c1)
+    if (!is.null(formulaExact) | interceptExact) {
+      if (!is.null(formulaExact)) 
+        c0 <- CoverMargins(data, formulaExact, coverTable) else c0 <- NULL
+        if (interceptExact) 
+          c0 <- c("(Intercept)", c0)
+        c1 <- c1[is.na(CalibrateSSB::MatchVarNames(c1, c0))]
+    } else {
+      c0 <- NULL
+    }
+    list(coverMargins = c1, coverMarginsExact = c0)
+}
