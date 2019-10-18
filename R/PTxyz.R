@@ -14,6 +14,7 @@
 #'  
 #' @importFrom SSBtools AutoHierarchies FactorLevCorr FindTableGroup FindDimLists HierarchyComputeDummy
 #' @importFrom easySdcTable ReplaceDimList ProtectTable
+#' @importFrom RegSDC RegSDCdata SuppressDec
 #' @export
 #'
 #' @examples

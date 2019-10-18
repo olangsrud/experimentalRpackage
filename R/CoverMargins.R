@@ -110,3 +110,67 @@ CoverMarginsExact <- function(data, formula, formulaExact = NULL,
     }
     list(coverMargins = c1, coverMarginsExact = c0)
 }
+
+
+
+
+#' Laplace or pTable perturbed margins
+#'
+#' The function make use of \code{\link{CoverMarginsExact}}.
+#' 
+#' @param data Input data as a data frame (inner cells)
+#' @param freqVar Variable holding counts (name or number)
+#' @param formula Model formula defining cells to be perturbed 
+#' @param formulaExact Model formula defining cells to be exact
+#' @param eps Differential privacy parameter
+#' @param pMatrix Output from \code{\link{Pmatrix}}
+#' @param rkeys Uniformly distributed keys
+#' @param ... Further parameters to \code{\link{CoverMarginsExact}}
+#'
+#' @return A list 
+#' 
+#' @importFrom SSBtools FormulaSums
+#' @importFrom Matrix Matrix crossprod
+#' @export
+#'
+#' @examples
+#' z2 <- EasyData("z2")
+#' a1 <- NoisyCoverMargins(z2, "ant", ~region + kostragr * hovedint)
+#' a2 <- NoisyCoverMargins(z2, "ant", ~region + kostragr * hovedint, ~kostragr + hovedint)
+NoisyCoverMargins <- function(data, freqVar, formula, formulaExact = NULL, eps = 0.5, pMatrix = NULL, rkeys = NULL, ...) {
+  cme <- CoverMarginsExact(data, formula, formulaExact, ...)
+  f <- Terms2formula(cme$coverMargins)
+  x <- FormulaSums(data, f)
+  if (!is.null(cme$coverMarginsExact)) {
+    fExact <- Terms2formula(cme$coverMarginsExact)
+    xExact <- FormulaSums(data, fExact)
+  } else {
+    xExact <- x[, integer(0), drop = FALSE]
+  }
+  y <- Matrix(data[, freqVar], ncol = 1)
+  
+  z <- crossprod(x, y)
+  zExact <- crossprod(xExact, y)
+  
+  nMargins <- length(cme$coverMargins)
+  
+  if (is.null(pMatrix)) {
+    zPerturbed <- z + Lap(nrow(z), nMargins/eps)
+  } else {
+    stop("Use of pMatrix not implemented so far")
+  }
+  c(cme, nMargins = nMargins, x = x, xExact = xExact, z = z, zExact = zExact, zPerturbed = zPerturbed)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
