@@ -2,14 +2,14 @@
 % Please edit documentation in R/div.R
 \name{Terms2formula}
 \alias{Terms2formula}
-\title{Model formula from vector of terms where intercept is specified as \code{"1"}}
+\title{Model formula from vector of terms where intercept is specified as a string}
 \usage{
-Terms2formula(x, InterceptAs1 = TRUE, env = parent.frame())
+Terms2formula(x, intercept = "(Intercept)", env = parent.frame())
 }
 \arguments{
 \item{x}{Character vector}
 
-\item{InterceptAs1}{Whether to specify intercept as \code{"1"}}
+\item{intercept}{String to specify intercept}
 
 \item{env}{Parameter to \code{\link{as.formula}}}
 }
@@ -17,10 +17,12 @@ Terms2formula(x, InterceptAs1 = TRUE, env = parent.frame())
 formula
 }
 \description{
-Model formula from vector of terms where intercept is specified as \code{"1"}
+Model formula from vector of terms where intercept is specified as a string
 }
 \examples{
 Terms2formula(c("a", "b:c"))
-Terms2formula(c("a", "b:c"), FALSE)
-Terms2formula(c("a", "b:c", "1"))
+Terms2formula(c("a", "b:c"), NULL)
+Terms2formula(c("a", "b:c", "(Intercept)"))
+Terms2formula(c("a", "b:c"), "1")
+Terms2formula(c("a", "b:c", "1"), "1")
 }
