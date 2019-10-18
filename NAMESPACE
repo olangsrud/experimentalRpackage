@@ -3,6 +3,7 @@
 export(CoverMargins)
 export(Lap)
 export(PTxyz)
+export(Terms2formula)
 importFrom(SSBtools,AutoHierarchies)
 importFrom(SSBtools,FactorLevCorr)
 importFrom(SSBtools,FindDimLists)
