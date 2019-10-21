@@ -53,7 +53,7 @@ Pconvert <- function(x, pMatrix, rkeys = runif(NROW(x))) {
   z[z >= nrow(pMatrix)] <- nrow(pMatrix) - 1L
   pM1 <- pMatrix[z + 1, , drop = FALSE]
   cc <- col(pM1) * as.integer(!(pM1 < rkeys))
-  cc[cc == 0] <- Inf
+  cc[cc == 0] <- .Machine$integer.max # Instead of Inf to keep integer class 
   x - z + as.integer(colnames(pMatrix))[apply(cc, 1, min)]
 }
 
