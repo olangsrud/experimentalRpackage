@@ -5,7 +5,7 @@
 \title{Laplace or pTable perturbed margins}
 \usage{
 NoisyCoverMargins(data, freqVar, formula, formulaExact = NULL,
-  eps = 0.5, pMatrix = NULL, rkeys = NULL, ...)
+  eps = 0.5, pMatrix = NULL, keyVar = NULL, ...)
 }
 \arguments{
 \item{data}{Input data as a data frame (inner cells)}
@@ -20,7 +20,7 @@ NoisyCoverMargins(data, freqVar, formula, formulaExact = NULL,
 
 \item{pMatrix}{Output from \code{\link{Pmatrix}}}
 
-\item{rkeys}{Uniformly distributed keys}
+\item{keyVar}{Variable holding uniformly distributed keys (name or number)}
 
 \item{...}{Further parameters to \code{\link{CoverMarginsExact}}}
 }
@@ -33,5 +33,8 @@ The function make use of \code{\link{CoverMarginsExact}}.
 \examples{
 z2 <- EasyData("z2")
 a1 <- NoisyCoverMargins(z2, "ant", ~region + kostragr * hovedint)
-a2 <- NoisyCoverMargins(z2, "ant", ~region + kostragr * hovedint, ~kostragr + hovedint)
+a2 <- NoisyCoverMargins(z2, "ant", ~region + kostragr * hovedint, ~kostragr + hovedint, eps = 0.25)
+a3 <- NoisyCoverMargins(cbind(z2,keyVar = runif(44) * (z2$ant>0)), "ant", 
+                        ~region + kostragr * hovedint, ~kostragr + hovedint, 
+                        pMatrix = Pmatrix(), keyVar = "keyVar")
 }

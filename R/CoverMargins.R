@@ -124,20 +124,24 @@ CoverMarginsExact <- function(data, formula, formulaExact = NULL,
 #' @param formulaExact Model formula defining cells to be exact
 #' @param eps Differential privacy parameter
 #' @param pMatrix Output from \code{\link{Pmatrix}}
-#' @param rkeys Uniformly distributed keys
+#' @param keyVar Variable holding uniformly distributed keys (name or number)
 #' @param ... Further parameters to \code{\link{CoverMarginsExact}}
 #'
 #' @return A list 
 #' 
 #' @importFrom SSBtools FormulaSums
 #' @importFrom Matrix Matrix crossprod
+#' @importFrom stats runif
 #' @export
 #'
 #' @examples
 #' z2 <- EasyData("z2")
 #' a1 <- NoisyCoverMargins(z2, "ant", ~region + kostragr * hovedint)
-#' a2 <- NoisyCoverMargins(z2, "ant", ~region + kostragr * hovedint, ~kostragr + hovedint)
-NoisyCoverMargins <- function(data, freqVar, formula, formulaExact = NULL, eps = 0.5, pMatrix = NULL, rkeys = NULL, ...) {
+#' a2 <- NoisyCoverMargins(z2, "ant", ~region + kostragr * hovedint, ~kostragr + hovedint, eps = 0.25)
+#' a3 <- NoisyCoverMargins(cbind(z2,keyVar = runif(44) * (z2$ant>0)), "ant", 
+#'                         ~region + kostragr * hovedint, ~kostragr + hovedint, 
+#'                         pMatrix = Pmatrix(), keyVar = "keyVar")
+NoisyCoverMargins <- function(data, freqVar, formula, formulaExact = NULL, eps = 0.5, pMatrix = NULL, keyVar = NULL, ...) {
   cme <- CoverMarginsExact(data, formula, formulaExact, ...)
   f <- Terms2formula(cme$coverMargins)
   x <- FormulaSums(data, f)
@@ -157,18 +161,17 @@ NoisyCoverMargins <- function(data, freqVar, formula, formulaExact = NULL, eps =
   if (is.null(pMatrix)) {
     zPerturbed <- z + Lap(nrow(z), nMargins/eps)
   } else {
-    stop("Use of pMatrix not implemented so far")
+    if (!is.null(keyVar)) 
+      rKey <- crossprod(x, data[, keyVar])[, 1, drop = TRUE]%%1 else {
+        yNon0 <- y != 0
+        y[yNon0] <- runif(sum(yNon0))
+        rKey <- crossprod(x, y)[, 1, drop = TRUE]%%1
+      }
+    zPerturbed <- Pconvert(z, pMatrix, rKey)
   }
-  c(cme, nMargins = nMargins, x = x, xExact = xExact, z = z, zExact = zExact, zPerturbed = zPerturbed)
+  list(coverMargins = cme$coverMargins, coverMarginsExact = cme$coverMarginsExact, nMargins = nMargins, 
+       x = x, xExact = xExact, z = z, zExact = zExact, zPerturbed = zPerturbed)
 }
-
-
-
-
-
-
-
-
 
 
 
