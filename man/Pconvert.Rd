@@ -4,7 +4,7 @@
 \alias{Pconvert}
 \title{Convert counts using pTable}
 \usage{
-Pconvert(x, pMatrix, rkeys)
+Pconvert(x, pMatrix, rkeys = runif(NROW(x)))
 }
 \arguments{
 \item{x}{counts}

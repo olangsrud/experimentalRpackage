@@ -48,13 +48,13 @@ Pmatrix <- function(D = 5, V = 3, js = 2, ..., doCumSum = TRUE) {
 #' Pconvert(rep(1, 4), Pmatrix(), c(0.5, 0.8, 0.9, 0.99))
 #' Pconvert(1:9, Pmatrix(), (1:9)/10)
 #' Pconvert(1:9, Pmatrix(), rev((1:9)/10))
-Pconvert <- function(x, pMatrix, rkeys) {
-  z <- x
-  z[x >= nrow(pMatrix)] <- nrow(pMatrix) - 1
+Pconvert <- function(x, pMatrix, rkeys = runif(NROW(x))) {
+  z <- as.vector(x)
+  z[z >= nrow(pMatrix)] <- nrow(pMatrix) - 1L
   pM1 <- pMatrix[z + 1, , drop = FALSE]
   cc <- col(pM1) * as.integer(!(pM1 < rkeys))
   cc[cc == 0] <- Inf
-  as.integer(colnames(pMatrix))[apply(cc, 1, min)] + x - z
+  x - z + as.integer(colnames(pMatrix))[apply(cc, 1, min)]
 }
 
 
