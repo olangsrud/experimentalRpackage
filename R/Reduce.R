@@ -110,7 +110,10 @@ ReduceXspes <- function(x, z = NULL, y = NULL, digits = NULL) {   #  ReduceX <- 
 #' @param z a single column matrix
 #' @param yStart a starting estimate of \code{y}
 #'
-#' @return
+#' @return A list of three elements:
+#'         \item{\code{x}}{Reduced \code{x}}
+#'         \item{\code{z}}{Corresponding reduced \code{z}}
+#'         \item{\code{yKnown}}{Logical vector specifying elements of y that can be found directly as 0}
 #' @keywords internal
 #' 
 #' @importFrom Matrix rowSums
