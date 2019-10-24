@@ -17,6 +17,7 @@
 #'         
 #' @keywords internal
 #' @importFrom  methods as
+#' @import Matrix 
 #' @export
 #' @author Øyvind Langsrud
 #'
@@ -149,7 +150,10 @@ ReduceBy0 <- function(x, z, yStart = NULL) {
   
   if (!is.null(yStart)) 
     y0 <- y0 | (yStart == 0)
-  x <- x[!y0, !z0, drop = FALSE]
-  return(list(x = x, z = z[!z0, , drop = FALSE], yKnown = y0))
+  
+  ny0 = seq_along(y0)[!y0]
+  nz0 = seq_along(z0)[!z0]
+  x <- x[ny0, nz0, drop = FALSE]
+  return(list(x = x, z = z[nz0, , drop = FALSE], yKnown = y0))
 }
 

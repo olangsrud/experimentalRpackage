@@ -11,6 +11,8 @@
 #' @param iter maximum number of iterations
 #' @param yStart a starting estimate of \code{y}
 #' @param eps maximum allowed value of 
+#' @param reduceBy0 Under work
+#' @param reduceX Under work
 #'        \code{max(abs(z - t(x) \%*\% yHat))} 
 #'
 #' @return \code{yHat}, the estimate of \code{y} 
@@ -46,7 +48,44 @@
 #' 
 #' # Maximal absolute difference
 #' max(abs(yHatPfifp - yHatLoglin))
-Mifp <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01) {
+Mifp <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, 
+                 reduceBy0 = FALSE, reduceX = FALSE) {
+  
+  if (reduceX) reduceBy0 <- TRUE
+  
+  if (reduceBy0) {
+    cat("0")
+    snx <- seq_len(nrow(x))
+    flush.console()
+    a <- ReduceBy0(x, z, yStart)
+    aKnown <- as.vector(a$yKnown)
+    yHat <- Matrix(0, length(aKnown), 1)
+    yKnown <- aKnown
+    rerun <- reduceX
+    while (rerun) {
+      rerun <- FALSE
+      cat("x")
+      flush.console()
+      a <- ReduceXspes(a$x, a$z)
+      aKnown <- as.vector(a$yKnown)
+      if (any(aKnown)) {
+        yHat[(snx[!yKnown])[seq_along(aKnown)[aKnown]], 1] <- a$y[seq_along(aKnown)[aKnown], 1]
+        yKnown[!yKnown] <- aKnown
+        cat("0")
+        flush.console()
+        a <- ReduceBy0(a$x, a$z)
+        aKnown <- as.vector(a$yKnown)
+        if (any(aKnown)) {
+          yHat[(snx[!yKnown])[aKnown], 1] <- 0
+          yKnown[!yKnown] <- aKnown
+          rerun <- TRUE
+        }
+      }
+    }
+    yHat[seq_along(yKnown)[!yKnown], 1] <- Mifp(a$x, a$z, iter = iter, yStart = yStart[seq_along(yKnown)[!yKnown], 1], eps = eps)
+    return(yHat)
+  }
+
   
   cat(":")
   flush.console()

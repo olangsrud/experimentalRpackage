@@ -4,7 +4,8 @@
 \alias{Mifp}
 \title{Iterative proportional fitting from matrix input}
 \usage{
-Mifp(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01)
+Mifp(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01,
+  reduceBy0 = FALSE, reduceX = FALSE)
 }
 \arguments{
 \item{x}{a matrix}
@@ -15,7 +16,11 @@ Mifp(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01)
 
 \item{yStart}{a starting estimate of \code{y}}
 
-\item{eps}{maximum allowed value of 
+\item{eps}{maximum allowed value of}
+
+\item{reduceBy0}{Under work}
+
+\item{reduceX}{Under work
 \code{max(abs(z - t(x) \%*\% yHat))}}
 }
 \value{
