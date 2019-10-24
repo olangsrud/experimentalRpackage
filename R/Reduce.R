@@ -104,43 +104,49 @@ ReduceXspes <- function(x, z = NULL, y = NULL, digits = NULL) {   #  ReduceX <- 
 }
 
 
-ReduceBy0 <- function(x, z){
-  z0 = as.vector(as.matrix(z))==0
-  y0 = Matrix::rowSums(x[, z0, drop=FALSE]) > 0
-  x = x[!y0, !z0, drop=FALSE]
-  return(list(x=x,z = z[!z0, ,drop=FALSE], yKnown = y0)) 
+#' Reduce input to \code{\link{Mifp}} based on zeros in z and possible zeros in yStart
+#' 
+#' @param x a matrix 
+#' @param z a single column matrix
+#' @param yStart a starting estimate of \code{y}
+#'
+#' @return
+#' @keywords internal
+#' 
+#' @importFrom Matrix rowSums
+#' 
+#' @export
+#' @author Øyvind Langsrud
+#'
+#' @examples
+#' # Generate data with zeros
+#' z2 <- EasyData("z2")
+#' z2$ant[z2$hovedint == "trygd"] <- 0
+#' z2$ant[1:3] <- 0
+#' 
+#' x <- FormulaSums(z2, ~~region + kostragr * hovedint - 1)
+#' z <- t(x) %*% z2$ant
+#' 
+#' # Run ReduceBy0
+#' a <- ReduceBy0(x, z)
+#' 
+#' # The rows known to be 0 and omitted from a$x
+#' z2[a$yKnown, ]
+#' 
+#' # Dimension of x reduced
+#' dim(x)
+#' dim(a$x)
+#' 
+#' # Additional elements know to be 0
+#' b <- ReduceBy0(x, z, c(0, 0, rep(1, 42)))
+#' z2[b$yKnown, ]
+ReduceBy0 <- function(x, z, yStart = NULL) {
+  z0 <- as.vector(as.matrix(z)) == 0
+  y0 <- rowSums(x[, z0, drop = FALSE]) > 0
+  
+  if (!is.null(yStart)) 
+    y0 <- y0 | (yStart == 0)
+  x <- x[!y0, !z0, drop = FALSE]
+  return(list(x = x, z = z[!z0, , drop = FALSE], yKnown = y0))
 }
 
-if(FALSE){
-  load("resDivTimes3eps_e14.RData")
-  load("resDiv_e14.RData")
-  x = cbind(a$x0,a$x1)
-  aa=ReduceBy0(x,crossprod(x,a$yS))
-  pp=Pfifp(aa$x,aa$z,300)
-  ySS = Matrix(0,length(aa$yKnown),1)
-  ySS[!aa$yKnown,] = pp
-  Utility(t(a$x1) %*% a$y,t(a$x1) %*% a$yS)
-  
-  aa=ReduceBy0(cbind(1,aNULL0$x1),crossprod(cbind(1,aNULL0$x1),aNULL0$yS))
-  pp=Pfifp(aa$x,aa$z,300)
-  ySS = Matrix(0,length(aa$yKnown),1)
-  ySS[!aa$yKnown,] = pp
-  
-  Utility(t(aNULL$x1) %*% a$y,t(aNULL$x1) %*% aNULL$yS)
-  
-  aa=ReduceBy0(cbind(1,aNULL0Lap$x1),crossprod(cbind(1,aNULL0Lap$x1),aNULL0Lap$yS))
-  pp=Pfifp(aa$x,aa$z,300)
-  ySS = Matrix(0,length(aa$yKnown),1)
-  ySS[!aa$yKnown,] = pp
-  
-  
-  
-  x = (-6000:6000)/1000
-  lapd = dexp(abs(x))/2
-  normd= dnorm(x)
-  
-  plot(x,lapd,'l',col="blue",lwd = 6)    
-  lines(x,normd,lwd = 3,col="red")
-  
-  
-}
