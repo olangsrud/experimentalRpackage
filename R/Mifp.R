@@ -10,10 +10,10 @@
 #' @param z a single column matrix
 #' @param iter maximum number of iterations
 #' @param yStart a starting estimate of \code{y}
-#' @param eps maximum allowed value of 
-#' @param reduceBy0 Under work
-#' @param reduceX Under work
-#'        \code{max(abs(z - t(x) \%*\% yHat))} 
+#' @param eps maximum allowed value of \code{max(abs(z - t(x) \%*\% yHat))} 
+#' @param reduceBy0 When TRUE, \code{\link{ReduceBy0}}  used within the function 
+#' @param reduceX When TRUE, \code{\link{ReduceBy0}} and  \code{\link{ReduceX}} used within the function (iteratively)
+#'        
 #'
 #' @return \code{yHat}, the estimate of \code{y} 
 #' 
@@ -48,6 +48,49 @@
 #' 
 #' # Maximal absolute difference
 #' max(abs(yHatPfifp - yHatLoglin))
+#' 
+#' 
+#' #########################################
+#' #  reduceBy0  and  reduceX examples 
+#' #########################################
+#' 
+#' #' z3 <- EasyData("z3")
+#' x <- FormulaSums(z3, ~region + kostragr * hovedint + region * mnd2 + fylke * mnd + 
+#'                      mnd * hovedint + mnd2 * fylke * hovedint - 1)
+#' 
+#' 
+#' t <- 360
+#' y <- z3$ant
+#' y[round((1:t) * 432/t)] <- 0
+#' z <- t(x) %*% y
+#' a1 <- Mifp(x, z, eps = 0.1)
+#' a2 <- Mifp(x, z, reduceBy0 = TRUE, eps = 0.1)
+#' a3 <- Mifp(x, z, reduceX = TRUE, eps = 0.1)
+#' 
+#' max(abs(a1 - a2))
+#' max(abs(a1 - a3))
+#' 
+#' 
+#' t <- 402
+#' y <- z3$ant
+#' y[round((1:t) * 432/t)] <- 0
+#' z <- t(x) %*% y
+#' a1 <- Mifp(x, z, eps = 1)
+#' a2 <- Mifp(x, z, reduceBy0 = TRUE, eps = 1, iter = iter)
+#' a3 <- Mifp(x, z, reduceX = TRUE, eps = 1, iter = iter)
+#' max(abs(a1 - a2))
+#' max(abs(a1 - a3))
+#' 
+#' 
+#' t <- 411
+#' y <- z3$ant
+#' y[round((1:t) * 432/t)] <- 0
+#' z <- t(x) %*% y
+#' a1 <- Mifp(x, z)
+#' a2 <- Mifp(x, z, reduceBy0 = TRUE)
+#' a3 <- Mifp(x, z, reduceX = TRUE)
+#' max(abs(a1 - a2))
+#' max(abs(a1 - a3))
 Mifp <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, 
                  reduceBy0 = FALSE, reduceX = FALSE) {
   
@@ -82,7 +125,20 @@ Mifp <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01,
         }
       }
     }
-    yHat[seq_along(yKnown)[!yKnown], 1] <- Mifp(a$x, a$z, iter = iter, yStart = yStart[seq_along(yKnown)[!yKnown], 1], eps = eps)
+    
+    cat("(",dim(x)[1],"*",dim(x)[2],"->", dim(a$x)[1],"*",dim(a$x)[2],")",sep="")
+    
+    if(any(!yKnown))
+      yHat[seq_along(yKnown)[!yKnown], 1] <- Mifp(a$x, a$z, iter = iter, yStart = yStart[seq_along(yKnown)[!yKnown], 1], eps = eps)
+    else
+      cat("   0 iterations\n")
+    
+    deviation <- max(abs(crossprod(x, yHat) - z))
+    
+  
+    if (!(deviation < eps)) 
+      warning("Deviation limit exceeded")
+    cat("Final deviation", deviation, "\n")
     return(yHat)
   }
 
@@ -141,6 +197,20 @@ Mifp <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01,
   cat("   ", t, "iterations: deviation", deviation, "\n")
   yStart
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

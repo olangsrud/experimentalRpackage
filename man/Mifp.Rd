@@ -16,12 +16,11 @@ Mifp(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01,
 
 \item{yStart}{a starting estimate of \code{y}}
 
-\item{eps}{maximum allowed value of}
+\item{eps}{maximum allowed value of \code{max(abs(z - t(x) \%*\% yHat))}}
 
-\item{reduceBy0}{Under work}
+\item{reduceBy0}{When TRUE, \code{\link{ReduceBy0}}  used within the function}
 
-\item{reduceX}{Under work
-\code{max(abs(z - t(x) \%*\% yHat))}}
+\item{reduceX}{When TRUE, \code{\link{ReduceBy0}} and  \code{\link{ReduceX}} used within the function (iteratively)}
 }
 \value{
 \code{yHat}, the estimate of \code{y}
@@ -59,4 +58,47 @@ yHatPfifp <- Mifp(x, z, iter = iter, eps = eps)
 
 # Maximal absolute difference
 max(abs(yHatPfifp - yHatLoglin))
+
+
+#########################################
+#  reduceBy0  and  reduceX examples 
+#########################################
+
+#' z3 <- EasyData("z3")
+x <- FormulaSums(z3, ~region + kostragr * hovedint + region * mnd2 + fylke * mnd + 
+                     mnd * hovedint + mnd2 * fylke * hovedint - 1)
+
+
+t <- 360
+y <- z3$ant
+y[round((1:t) * 432/t)] <- 0
+z <- t(x) \%*\% y
+a1 <- Mifp(x, z, eps = 0.1)
+a2 <- Mifp(x, z, reduceBy0 = TRUE, eps = 0.1)
+a3 <- Mifp(x, z, reduceX = TRUE, eps = 0.1)
+
+max(abs(a1 - a2))
+max(abs(a1 - a3))
+
+
+t <- 402
+y <- z3$ant
+y[round((1:t) * 432/t)] <- 0
+z <- t(x) \%*\% y
+a1 <- Mifp(x, z, eps = 1)
+a2 <- Mifp(x, z, reduceBy0 = TRUE, eps = 1, iter = iter)
+a3 <- Mifp(x, z, reduceX = TRUE, eps = 1, iter = iter)
+max(abs(a1 - a2))
+max(abs(a1 - a3))
+
+
+t <- 411
+y <- z3$ant
+y[round((1:t) * 432/t)] <- 0
+z <- t(x) \%*\% y
+a1 <- Mifp(x, z)
+a2 <- Mifp(x, z, reduceBy0 = TRUE)
+a3 <- Mifp(x, z, reduceX = TRUE)
+max(abs(a1 - a2))
+max(abs(a1 - a3))
 }

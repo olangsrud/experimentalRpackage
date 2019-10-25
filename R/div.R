@@ -24,7 +24,7 @@ Lap <- function(n = 1, b = 1) {
 #'
 #' @return formula
 #' 
-#' @importFrom stats as.formula update
+#' @importFrom stats as.formula 
 #' @export
 #'
 #' @examples
