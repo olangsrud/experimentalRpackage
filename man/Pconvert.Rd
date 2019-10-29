@@ -24,3 +24,6 @@ Pconvert(rep(1, 4), Pmatrix(), c(0.5, 0.8, 0.9, 0.99))
 Pconvert(1:9, Pmatrix(), (1:9)/10)
 Pconvert(1:9, Pmatrix(), rev((1:9)/10))
 }
+\author{
+Øyvind Langsrud
+}

@@ -31,3 +31,6 @@ CoverMargins(z3, ~region * mnd + hovedint * mnd + fylke * hovedint * mnd +
 CoverMargins(z3, ~fylke * hovedint + kostragr * hovedint, TRUE)
 CoverMargins(z3, ~hovedint * mnd2 + mnd + hovedint + kostragr * hovedint, TRUE)
 }
+\author{
+Øyvind Langsrud
+}

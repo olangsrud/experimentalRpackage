@@ -16,6 +16,7 @@
 #' @importFrom easySdcTable ReplaceDimList ProtectTable
 #' @importFrom RegSDC RegSDCdata SuppressDec
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' # Same data as in RegSDCdata examples (and in paper)

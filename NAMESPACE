@@ -3,7 +3,7 @@
 export(CoverMargins)
 export(CoverMarginsExact)
 export(Lap)
-export(Mifp)
+export(Mipf)
 export(NoisyCoverMargins)
 export(NoisyCoverMarginsToInner)
 export(PTxyz)

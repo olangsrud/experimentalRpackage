@@ -26,6 +26,7 @@ Lap <- function(n = 1, b = 1) {
 #' 
 #' @importFrom stats as.formula 
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' Terms2formula(c("a", "b:c"))
@@ -59,6 +60,7 @@ Terms2formula <- function(x, intercept = "(Intercept)", env = parent.frame()) {
 #' @return integer vector
 #' @importFrom SSBtools  SortRows
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' # 1:4 within A and 1:2 within B

@@ -13,6 +13,7 @@
 #' @return Output from \code{\link{nnls}}, \code{\link{glmnet}} or coefficient estimate calculated using \code{\link{ginv}} 
 #' @importFrom nnls nnls 
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' x <- cbind(1:11, -11:-1, c(1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2))

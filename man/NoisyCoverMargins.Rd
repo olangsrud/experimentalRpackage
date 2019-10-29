@@ -44,3 +44,6 @@ a3 <- NoisyCoverMargins(cbind(z2,keyVar = runif(44) * (z2$ant>0)), "ant",
                         ~region + kostragr * hovedint, ~kostragr + hovedint, 
                         pMatrix = Pmatrix(), keyVar = "keyVar")
 }
+\author{
+Øyvind Langsrud
+}

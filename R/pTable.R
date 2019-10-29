@@ -13,6 +13,7 @@
 #' @return Probability matrix
 #' @importFrom methods slot
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' Pmatrix(D=3, V=3, pstay= 0.5, doCumSum = FALSE)
@@ -43,6 +44,7 @@ Pmatrix <- function(D = 5, V = 3, js = 2, ..., doCumSum = TRUE) {
 #'
 #' @return converted counts
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' Pconvert(rep(1, 4), Pmatrix(), c(0.5, 0.8, 0.9, 0.99))

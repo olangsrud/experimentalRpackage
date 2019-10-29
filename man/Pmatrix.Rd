@@ -30,3 +30,6 @@ With doCumSum = FALSE, output is "pMatrix" created by \code{pt_create_pTable}
 Pmatrix(D=3, V=3, pstay= 0.5, doCumSum = FALSE)
 Pmatrix(D=3, V=3, pstay= 0.5)
 }
+\author{
+Øyvind Langsrud
+}

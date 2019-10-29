@@ -58,3 +58,6 @@ cbind(a$z, t(a$x) \%*\% cbind(a$y, yDec))
 a <- PTxyz(EasyData("z2"), 1:4, 5)
 cbind(a$z, t(a$x) \%*\% cbind(a$y, SuppressDec(a$x, a$z, rmse = 1, nRep = 3)))[which(is.na(a$z)), ]
 }
+\author{
+Øyvind Langsrud
+}

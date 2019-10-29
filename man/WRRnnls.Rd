@@ -79,3 +79,6 @@ print(coef4)
 # Original y and fitted values. Close fit for last two observation.
 cbind(y, x \%*\% coef4)
 }
+\author{
+Øyvind Langsrud
+}

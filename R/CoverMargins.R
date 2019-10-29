@@ -13,6 +13,7 @@
 #' @importFrom SSBtools HierarchicalGroups SeqInc
 #' @importFrom stats rexp terms.formula
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' 
@@ -83,6 +84,7 @@ Aterms <- function(x) { # x = attr(terms.formula(~a*B*C + c*D),'factors')
 #' 
 #' @importFrom CalibrateSSB MatchVarNames
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' z3 <- EasyData("z3")
@@ -138,6 +140,7 @@ CoverMarginsExact <- function(data, formula, formulaExact = NULL,
 #' @importFrom Matrix Matrix crossprod
 #' @importFrom stats runif
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' z2 <- EasyData("z2")

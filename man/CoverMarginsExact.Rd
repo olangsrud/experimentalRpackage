@@ -40,3 +40,6 @@ CoverMarginsExact(z3, ~region, ~kostragr * hovedint, TRUE, FALSE)
 CoverMarginsExact(z3, ~region * mnd, ~kostragr * hovedint, coverMargins = FALSE)
 CoverMarginsExact(z3, ~region, interceptExact = TRUE)  
 }
+\author{
+Øyvind Langsrud
+}

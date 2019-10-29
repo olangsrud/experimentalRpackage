@@ -24,3 +24,6 @@ UniqueSeq(c("A", "A", "B", "B", "A", "A"))
 # Ordered differently
 UniqueSeq(c("A", "A", "B", "B", "A", "A"), c(4, 5, 20, 10, 3, 0))
 }
+\author{
+Øyvind Langsrud
+}

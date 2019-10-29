@@ -26,3 +26,6 @@ Terms2formula(c("a", "b:c", "(Intercept)"))
 Terms2formula(c("a", "b:c"), "1")
 Terms2formula(c("a", "b:c", "1"), "1")
 }
+\author{
+Øyvind Langsrud
+}

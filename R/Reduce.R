@@ -105,7 +105,7 @@ ReduceXspes <- function(x, z = NULL, y = NULL, digits = NULL) {   #  ReduceX <- 
 }
 
 
-#' Reduce input to \code{\link{Mifp}} based on zeros in z and possible zeros in yStart
+#' Reduce input to \code{\link{Mipf}} based on zeros in z and possible zeros in yStart
 #' 
 #' @param x a matrix 
 #' @param z a single column matrix
@@ -156,4 +156,3 @@ ReduceBy0 <- function(x, z, yStart = NULL) {
   x <- x[ny0, nz0, drop = FALSE]
   return(list(x = x, z = z[nz0, , drop = FALSE], yKnown = y0))
 }
-

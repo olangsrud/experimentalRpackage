@@ -98,3 +98,6 @@ a3 <- ReleasableInner(z2, "ant", ~region + kostragr * hovedint, ~kostragr + hove
 Another way to obtain releasable inner cell frequencies from protected tabular data is to 
           run \code{\link{SuppressDec}} with input from \code{\link{PTxyz}}.
 }
+\author{
+Øyvind Langsrud
+}

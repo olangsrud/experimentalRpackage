@@ -28,6 +28,7 @@
 #'           run \code{\link{SuppressDec}} with input from \code{\link{PTxyz}}.        
 #' 
 #' @export
+#' @author Øyvind Langsrud
 #'
 #' @examples
 #' y <- c(3, 1, 5, 6, 4, 8, 2, 7, 27)

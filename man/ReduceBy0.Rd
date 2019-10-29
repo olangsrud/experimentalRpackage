@@ -2,7 +2,7 @@
 % Please edit documentation in R/Reduce.R
 \name{ReduceBy0}
 \alias{ReduceBy0}
-\title{Reduce input to \code{\link{Mifp}} based on zeros in z and possible zeros in yStart}
+\title{Reduce input to \code{\link{Mipf}} based on zeros in z and possible zeros in yStart}
 \usage{
 ReduceBy0(x, z, yStart = NULL)
 }
@@ -20,7 +20,7 @@ A list of three elements:
         \item{\code{yKnown}}{Logical vector specifying elements of y that can be found directly as 0}
 }
 \description{
-Reduce input to \code{\link{Mifp}} based on zeros in z and possible zeros in yStart
+Reduce input to \code{\link{Mipf}} based on zeros in z and possible zeros in yStart
 }
 \examples{
 # Generate data with zeros
