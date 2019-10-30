@@ -104,12 +104,23 @@ y <- z3$ant
 y[round((1:t) * 432/t)] <- 0
 z <- t(x) \%*\% y
 a1 <- Mipf(x, z, eps = 1)
-a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1, iter = iter)
-a3 <- Mipf(x, z, reduceX = TRUE, eps = 1, iter = iter)
+a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1)
+a3 <- Mipf(x, z, reduceX = TRUE, eps = 1)
 max(abs(a1 - a2))
 max(abs(a1 - a3))
 
-# All y-data found by reduce (0 iterations). 
+# Example with small eps and "Iteration stopped since tol reached"
+t <- 384
+y <- z3$ant
+y[round((1:t) * 432/t)] <- 0
+z <- t(x) \%*\% y
+a1 <- Mipf(x, z, eps = 1e-14)
+a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1e-14)
+a3 <- Mipf(x, z, reduceX = TRUE, eps = 1e-14)
+max(abs(a1 - a2))
+max(abs(a1 - a3))
+
+# All y-data found by reduceX (0 iterations). 
 t <- 411
 y <- z3$ant
 y[round((1:t) * 432/t)] <- 0

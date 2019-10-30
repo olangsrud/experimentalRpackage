@@ -94,12 +94,23 @@
 #' y[round((1:t) * 432/t)] <- 0
 #' z <- t(x) %*% y
 #' a1 <- Mipf(x, z, eps = 1)
-#' a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1, iter = iter)
-#' a3 <- Mipf(x, z, reduceX = TRUE, eps = 1, iter = iter)
+#' a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1)
+#' a3 <- Mipf(x, z, reduceX = TRUE, eps = 1)
 #' max(abs(a1 - a2))
 #' max(abs(a1 - a3))
 #' 
-#' # All y-data found by reduce (0 iterations). 
+#' # Example with small eps and "Iteration stopped since tol reached"
+#' t <- 384
+#' y <- z3$ant
+#' y[round((1:t) * 432/t)] <- 0
+#' z <- t(x) %*% y
+#' a1 <- Mipf(x, z, eps = 1e-14)
+#' a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1e-14)
+#' a3 <- Mipf(x, z, reduceX = TRUE, eps = 1e-14)
+#' max(abs(a1 - a2))
+#' max(abs(a1 - a3))
+#' 
+#' # All y-data found by reduceX (0 iterations). 
 #' t <- 411
 #' y <- z3$ant
 #' y[round((1:t) * 432/t)] <- 0
@@ -116,31 +127,37 @@ Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, t
   if (reduceX) reduceBy0 <- TRUE
   
   if (reduceBy0) {
-    cat("0")
+    cat("-")
     snx <- seq_len(nrow(x))
     flush.console()
     a <- ReduceBy0(x, z, yStart)
     aKnown <- as.vector(a$yKnown)
     yHat <- Matrix(0, length(aKnown), 1)
     yKnown <- aKnown
+    if (any(aKnown)) {
+      cat("0")
+      flush.console()
+    }
     rerun <- reduceX
     while (rerun) {
       rerun <- FALSE
-      cat("x")
-      flush.console()
       a <- ReduceXspes(a$x, a$z)
       aKnown <- as.vector(a$yKnown)
       if (any(aKnown)) {
+        cat("x")
+        flush.console()
         yHat[(snx[!yKnown])[seq_along(aKnown)[aKnown]], 1] <- a$y[seq_along(aKnown)[aKnown], 1]
         yKnown[!yKnown] <- aKnown
-        cat("0")
+        cat("-")
         flush.console()
         a <- ReduceBy0(a$x, a$z)
         aKnown <- as.vector(a$yKnown)
+        rerun <- TRUE
         if (any(aKnown)) {
+          cat("0")
+          flush.console()
           yHat[(snx[!yKnown])[aKnown], 1] <- 0
           yKnown[!yKnown] <- aKnown
-          rerun <- TRUE
         }
       }
     }
@@ -208,7 +225,6 @@ Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, t
       faktor <- rep(1, nrow(x))
       faktor[xL[[i]]@i + 1] <- faktorZ[xL[[i]]@j + 1]
       yStart <- faktor * yStart
-      # faktor2 = faktor*faktor2
     }
     deviationLast <- deviation 
     deviation <- max(abs(crossprod(x, yStart) - z))
