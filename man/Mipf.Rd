@@ -5,7 +5,9 @@
 \title{Iterative proportional fitting from matrix input}
 \usage{
 Mipf(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01,
-  tol = 1e-10, reduceBy0 = FALSE, reduceX = FALSE)
+  tol = 1e-10, reduceBy0 = FALSE, reduceX = FALSE,
+  returnDetails = FALSE, y = NULL, ordSplit = FALSE,
+  altSplit = FALSE)
 }
 \arguments{
 \item{x}{a matrix}
@@ -23,6 +25,14 @@ Mipf(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01,
 \item{reduceBy0}{When TRUE, \code{\link{ReduceBy0}}  used within the function}
 
 \item{reduceX}{When TRUE, \code{\link{ReduceBy0}} and  \code{\link{ReduceXspes}} used within the function (iteratively)}
+
+\item{returnDetails}{More output when TRUE. Quite similar to \code{\link{ReduceX}}}
+
+\item{y}{It is possible to set \code{z} to NULL and supply original \code{y} instead  (\code{z = t(x) \%*\% y})}
+
+\item{ordSplit}{Whether to order the pieces of the split x according to a rule}
+
+\item{altSplit}{Whether to try alternative splitting when ordinary not working properly}
 }
 \value{
 \code{yHat}, the estimate of \code{y}
@@ -65,10 +75,10 @@ x <- FormulaSums(df, ~A:B + A:C + A:D + A:E + B:C:D + C:D:E - 1)
 z <- t(x) \%*\% df$Freq
 
 # Estimate yHat by Mipf
-yHatPfifp <- Mipf(x, z, iter = iter, eps = eps)
+yHatPMipf <- Mipf(x, z, iter = iter, eps = eps)
 
 # Maximal absolute difference
-max(abs(yHatPfifp - yHatLoglin))
+max(abs(yHatPMipf - yHatLoglin))
 
 # Note: loglin reports one iteration extra 
 

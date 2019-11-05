@@ -14,6 +14,10 @@
 #' @param tol Another stopping criterion. Maximum absolute difference between two iteration. 
 #' @param reduceBy0 When TRUE, \code{\link{ReduceBy0}}  used within the function 
 #' @param reduceX When TRUE, \code{\link{ReduceBy0}} and  \code{\link{ReduceXspes}} used within the function (iteratively)
+#' @param returnDetails More output when TRUE. Quite similar to \code{\link{ReduceX}}
+#' @param y It is possible to set \code{z} to NULL and supply original \code{y} instead  (\code{z = t(x) \%*\% y})
+#' @param ordSplit Whether to order the pieces of the split x according to a rule
+#' @param altSplit Whether to try alternative splitting when ordinary not working properly
 #'        
 #'
 #' @return \code{yHat}, the estimate of \code{y} 
@@ -55,10 +59,10 @@
 #' z <- t(x) %*% df$Freq
 #' 
 #' # Estimate yHat by Mipf
-#' yHatPfifp <- Mipf(x, z, iter = iter, eps = eps)
+#' yHatPMipf <- Mipf(x, z, iter = iter, eps = eps)
 #' 
 #' # Maximal absolute difference
-#' max(abs(yHatPfifp - yHatLoglin))
+#' max(abs(yHatPMipf - yHatLoglin))
 #' 
 #' # Note: loglin reports one iteration extra 
 #' 
@@ -122,7 +126,11 @@
 #' max(abs(a2 - y))
 #' max(abs(a3 - y))
 Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, tol = 1e-10, 
-                 reduceBy0 = FALSE, reduceX = FALSE) {
+                  reduceBy0 = FALSE, reduceX = FALSE, returnDetails = FALSE, y = NULL,
+                  ordSplit = FALSE, altSplit = FALSE) {
+  
+  if (is.null(z))
+    z <- Matrix::crossprod(x, y)
   
   if (reduceX) reduceBy0 <- TRUE
   
@@ -166,19 +174,22 @@ Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, t
     
     if(any(!yKnown))
       yHat[seq_along(yKnown)[!yKnown], 1] <- Mipf(a$x, a$z, iter = iter, yStart = yStart[seq_along(yKnown)[!yKnown], 1], 
-                                                  eps = eps, tol = tol)
+                                                   eps = eps, tol = tol)
     else
       cat("   0 iterations\n")
     
     deviation <- max(abs(crossprod(x, yHat) - z))
     
-  
+    
     if (!(deviation < eps)) 
       warning("Deviation limit exceeded")
     cat("Final deviation", deviation, "\n")
+    if(returnDetails){
+      return(list(x = a$x, z = a$z, yKnown = yKnown, y = yHat))
+    }
     return(yHat)
   }
-
+  
   
   cat(":")
   flush.console()
@@ -202,6 +213,61 @@ Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, t
     zL[[i]] <- z[startCol[i]:(startCol[i + 1] - 1), 1, drop = FALSE]
   }
   
+  
+  
+  if (max(sapply(xL, function(x) max(rowSums(x)))) > 1) {
+    if (!altSplit) {
+      warning("Split into component not working properly. Try altSplit=TRUE ?")
+    } else {
+      warning("Alternative algorithm - since split into component not working properly")
+      
+      xL <- vector("list", 0)
+      zL <- vector("list", 0)
+      xU <- xT
+      
+      us <- UniqueSeq(xT@i, xT@j)
+      xU@x <- as.numeric(us)
+      
+      
+      m0 <- 0
+      ma <- 0
+      while (!is.na(ma)) {
+        ma <- match(2, xU@x)
+        if (is.na(ma)) {
+          mEnd <- ncol(xU)
+        } else {
+          mEnd <- min(xU@j[xU@x == 2])
+        }
+        xL1 <- xT[, m0 + (1:mEnd), drop = FALSE]
+        rS1 <- rowSums(xL1)
+        if (max(rS1) > 1) 
+          stop("something wrong")
+        xUL <- c(xUL, xU[, (1:mEnd), drop = FALSE])
+        if (!is.na(ma)) {
+          xU <- xU[, -(1:mEnd), drop = FALSE]
+          w1 <- which(rS1 == 1)
+          i1 <- xU@i %in% (w1 - 1)
+          xU@x[i1] <- xU@x[i1] - 1
+        }
+        xL <- c(xL, xL1)
+        zL <- c(zL, z[m0 + (1:mEnd), 1, drop = FALSE])
+        m0 <- m0 + mEnd
+      }
+      n <- length(xL)
+    }
+  }
+  
+  
+  if (ordSplit) {
+    ColSumsMean <- function(x) {
+      sum(x)/dim(x)[2]
+    }
+    ord <- order(sapply(xL, ColSumsMean), decreasing = TRUE)
+  } else {
+    ord <- seq_len(n)
+  }
+  
+  
   # Run iterative proportional fitting 
   t <- 0
   deviation <- max(abs(crossprod(x, yStart) - z))
@@ -219,7 +285,7 @@ Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, t
     k1 <- k2
     
     # Computation part
-    for (i in seq_len(n)) {
+    for (i in ord) {
       faktorZ <- zL[[i]]/crossprod(xL[[i]], yStart)
       faktorZ[is.na(faktorZ)] <- 1
       faktor <- rep(1, nrow(x))
@@ -238,6 +304,9 @@ Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, t
     }
   }
   cat("   ", t, "iterations: deviation", deviation, "\n")
+  if(returnDetails){
+    return(list(x = x, z = z, yKnown = rep(FALSE, dim(yStart)[1]), y = yStart))
+  }
   yStart
 }
 
