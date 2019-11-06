@@ -174,7 +174,7 @@ Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, t
     
     if(any(!yKnown))
       yHat[seq_along(yKnown)[!yKnown], 1] <- Mipf(a$x, a$z, iter = iter, yStart = yStart[seq_along(yKnown)[!yKnown], 1], 
-                                                   eps = eps, tol = tol)
+                                                   eps = eps, tol = tol, ordSplit = ordSplit, altSplit = altSplit)
     else
       cat("   0 iterations\n")
     
