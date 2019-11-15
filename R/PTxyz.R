@@ -64,11 +64,11 @@ PTxyz = function(data, dimVar, freqVar,...){
   freqVar = names(data[1, freqVar, drop=FALSE])
   
   varNames =  unique(names(dimLists))
-  ptA = pt$data[,!(names(pt$data) %in% c("freq", "sdcStatus", "suppressed"))]
+  ptA = pt$data[,!(names(pt$data) %in% c("freq", "sdcStatus", "suppressed")), drop = FALSE]
   
   x = CrossTable2ModelMatrix(data, ptA, dimLists)
   
-  rownames(x) = apply(data[, names(data) %in% names(ptA)], 1,paste,collapse = "_" )
+  rownames(x) = apply(data[, names(data) %in% names(ptA), drop = FALSE], 1,paste,collapse = "_" )
   colnames(x) = apply(ptA, 1,paste,collapse = ":" )
   y = as.matrix(data[,freqVar, drop=FALSE])
   z = as.matrix(pt$data[,"suppressed", drop=FALSE])

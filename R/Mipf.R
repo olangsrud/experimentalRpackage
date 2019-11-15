@@ -242,7 +242,6 @@ Mipf <- function(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01, t
         rS1 <- rowSums(xL1)
         if (max(rS1) > 1) 
           stop("something wrong")
-        xUL <- c(xUL, xU[, (1:mEnd), drop = FALSE])
         if (!is.na(ma)) {
           xU <- xU[, -(1:mEnd), drop = FALSE]
           w1 <- which(rS1 == 1)
