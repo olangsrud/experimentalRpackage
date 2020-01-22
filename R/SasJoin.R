@@ -60,6 +60,7 @@ SasJoin <- function(x, y, by = intersect(names(x), names(y)), xLast = TRUE, yLas
   
   xRg <- rg[xNr]
   yRg <- rg[-xNr]
+  rg <- max(rg)
   
   xRgSort <- sort(xRg, index.return = TRUE)
   yRgSort <- sort(yRg, index.return = TRUE)
@@ -75,7 +76,7 @@ SasJoin <- function(x, y, by = intersect(names(x), names(y)), xLast = TRUE, yLas
   if (yLast) 
     yL <- RevMatch(yRg[ySnr == 0], yRg) else yL <- integer(0)
   
-  ma <- SSBtools::Match(data.frame(a = xRg, b = xSnr), data.frame(a = yRg, b = ySnr))
+  ma <- match(rg*xSnr + xRg, rg*ySnr + yRg)
   
   isnama <- is.na(ma)
   
@@ -98,9 +99,14 @@ SasJoin <- function(x, y, by = intersect(names(x), names(y)), xLast = TRUE, yLas
   z <- cbind(x[indX, , drop = FALSE], y[indY, setdiff(names(y), by), drop = FALSE])
   
   if (yAll | xLast) {
-    ma2 <- match(yRg[-ma[!isnama]], xRg[xL])
+    if (length(ma[!isnama])){
+      ma2 <- match(yRg[-ma[!isnama]], xRg[xL])
+      indY2 <- yNr[-ma[!isnama]]
+    } else {
+      ma2 <- match(yRg, xRg[xL])
+      indY2 <- yNr
+    }
     indX2 <- xL[ma2]
-    indY2 <- yNr[-ma[!isnama]]
     if (!yAll) {
       indX2 <- indX2[!is.na(ma2)]
       indY2 <- indY2[!is.na(ma2)]
