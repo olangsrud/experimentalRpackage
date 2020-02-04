@@ -20,7 +20,8 @@
 #'
 #' @examples
 #' # Same data as in RegSDCdata examples (and in paper)
-#' data7 <- RegSDCdata("sec7data")[rep(1:4, 4) + rep((0:3) * 5, each = 4), 1:3]
+#' data7 <- RegSDCdata("sec7data")
+#' data7 <- data7[!is.na(data7$y), 1:3]
 #' data7
 #' 
 #' # Generate x, y, z similar to xAll, y, zAllSupp in RegSDCdata examples 
