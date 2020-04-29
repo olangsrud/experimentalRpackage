@@ -4,9 +4,14 @@
 \alias{CoverMarginsExact}
 \title{Extract two sets of model terms that cover two formulas}
 \usage{
-CoverMarginsExact(data, formula, formulaExact = NULL,
-  intercept = FALSE, interceptExact = !is.null(formulaExact),
-  coverMargins = TRUE)
+CoverMarginsExact(
+  data,
+  formula,
+  formulaExact = NULL,
+  intercept = FALSE,
+  interceptExact = !is.null(formulaExact),
+  coverMargins = TRUE
+)
 }
 \arguments{
 \item{data}{Input data as a data frame (inner cells)}

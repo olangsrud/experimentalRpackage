@@ -4,8 +4,16 @@
 \alias{SasJoin}
 \title{Join (merge) two data frames}
 \usage{
-SasJoin(x, y, by = intersect(names(x), names(y)), xLast = TRUE,
-  yLast = TRUE, xAll = TRUE, yAll = TRUE, doSort = TRUE)
+SasJoin(
+  x,
+  y,
+  by = intersect(names(x), names(y)),
+  xLast = TRUE,
+  yLast = TRUE,
+  xAll = TRUE,
+  yAll = TRUE,
+  doSort = TRUE
+)
 }
 \arguments{
 \item{x}{data frame}

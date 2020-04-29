@@ -4,10 +4,20 @@
 \alias{Mipf}
 \title{Iterative proportional fitting from matrix input}
 \usage{
-Mipf(x, z, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 0.01,
-  tol = 1e-10, reduceBy0 = FALSE, reduceX = FALSE,
-  returnDetails = FALSE, y = NULL, ordSplit = FALSE,
-  altSplit = FALSE)
+Mipf(
+  x,
+  z,
+  iter = 100,
+  yStart = matrix(1, nrow(x), 1),
+  eps = 0.01,
+  tol = 1e-10,
+  reduceBy0 = FALSE,
+  reduceX = FALSE,
+  returnDetails = FALSE,
+  y = NULL,
+  ordSplit = FALSE,
+  altSplit = FALSE
+)
 }
 \arguments{
 \item{x}{a matrix}

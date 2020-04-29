@@ -4,8 +4,16 @@
 \alias{NoisyCoverMargins}
 \title{Laplace or pTable perturbed margins}
 \usage{
-NoisyCoverMargins(data, freqVar, formula, formulaExact = NULL,
-  eps = 0.5, pMatrix = NULL, keyVar = NULL, ...)
+NoisyCoverMargins(
+  data,
+  freqVar,
+  formula,
+  formulaExact = NULL,
+  eps = 0.5,
+  pMatrix = NULL,
+  keyVar = NULL,
+  ...
+)
 }
 \arguments{
 \item{data}{Input data as a data frame (inner cells)}

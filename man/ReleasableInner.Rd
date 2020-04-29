@@ -5,14 +5,31 @@
 \alias{NoisyCoverMarginsToInner}
 \title{Releasable inner cell frequencies by post-processing protected tabular data}
 \usage{
-ReleasableInner(data, freqVar, formula, formulaExact = NULL,
-  regMethod = c("nnls", "ginv", "glmnet"), returnDetails = FALSE,
-  rerun = 0, eps = 0.5, pMatrix = NULL, keyVar = NULL,
-  wExact = 1000, intercept = FALSE,
-  interceptExact = !is.null(formulaExact), coverMargins = TRUE, ...)
+ReleasableInner(
+  data,
+  freqVar,
+  formula,
+  formulaExact = NULL,
+  regMethod = c("nnls", "ginv", "glmnet"),
+  returnDetails = FALSE,
+  rerun = 0,
+  eps = 0.5,
+  pMatrix = NULL,
+  keyVar = NULL,
+  wExact = 1000,
+  intercept = FALSE,
+  interceptExact = !is.null(formulaExact),
+  coverMargins = TRUE,
+  ...
+)
 
-NoisyCoverMarginsToInner(obj, regMethod = c("nnls", "ginv", "glmnet"),
-  returnDetails = FALSE, rerun = 0, ...)
+NoisyCoverMarginsToInner(
+  obj,
+  regMethod = c("nnls", "ginv", "glmnet"),
+  returnDetails = FALSE,
+  rerun = 0,
+  ...
+)
 }
 \arguments{
 \item{data}{Input data as a data frame (inner cells)}

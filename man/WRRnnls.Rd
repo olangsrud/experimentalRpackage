@@ -6,15 +6,23 @@
 \alias{WRRglmnet}
 \title{Special weighted and ridge penalized regression}
 \usage{
-WRRnnls(x, y, xExact = NULL, yExact = NULL, wExact = 1000,
-  lambda = 1e-04^2)
+WRRnnls(x, y, xExact = NULL, yExact = NULL, wExact = 1000, lambda = 1e-04^2)
 
-WRRginv(x, y, xExact = NULL, yExact = NULL, wExact = 1000,
-  lambda = 1e-04^2)
+WRRginv(x, y, xExact = NULL, yExact = NULL, wExact = 1000, lambda = 1e-04^2)
 
-WRRglmnet(x, y, xExact = NULL, yExact = NULL, wExact = 1000,
-  lambda = exp(((2 * 12):(-17 * 2))/2), intercept = FALSE,
-  standardize = FALSE, thresh = 1e-10, lower.limits = 0, ...)
+WRRglmnet(
+  x,
+  y,
+  xExact = NULL,
+  yExact = NULL,
+  wExact = 1000,
+  lambda = exp(((2 * 12):(-17 * 2))/2),
+  intercept = FALSE,
+  standardize = FALSE,
+  thresh = 1e-10,
+  lower.limits = 0,
+  ...
+)
 }
 \arguments{
 \item{x}{Input matrix, each row is an ordinary observation}
