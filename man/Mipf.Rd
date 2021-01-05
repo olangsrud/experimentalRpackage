@@ -6,15 +6,17 @@
 \usage{
 Mipf(
   x,
-  z,
+  z = NULL,
   iter = 100,
   yStart = matrix(1, nrow(x), 1),
   eps = 0.01,
   tol = 1e-10,
   reduceBy0 = FALSE,
-  reduceX = FALSE,
+  reduceByColSums = FALSE,
+  reduceByLeverage = FALSE,
   returnDetails = FALSE,
   y = NULL,
+  startCol = NULL,
   ordSplit = FALSE,
   altSplit = FALSE
 )
@@ -32,13 +34,19 @@ Mipf(
 
 \item{tol}{Another stopping criterion. Maximum absolute difference between two iteration.}
 
-\item{reduceBy0}{When TRUE, \code{\link{ReduceBy0}}  used within the function}
+\item{reduceBy0}{When TRUE, \code{\link{Reduce0exact}} used within the function}
 
-\item{reduceX}{When TRUE, \code{\link{ReduceBy0}} and  \code{\link{ReduceXspes}} used within the function (iteratively)}
+\item{reduceByColSums}{Parameter to \code{\link{Reduce0exact}} (when TRUE)}
 
-\item{returnDetails}{More output when TRUE. Quite similar to \code{\link{ReduceX}}}
+\item{reduceByLeverage}{Parameter to \code{\link{Reduce0exact}} (when TRUE)}
+
+\item{returnDetails}{More output when TRUE.}
 
 \item{y}{It is possible to set \code{z} to NULL and supply original \code{y} instead  (\code{z = t(x) \%*\% y})}
+
+\item{startCol}{Within the algorithm, \code{x} needs to be split into pieces. 
+Vector \code{startCol} is the indices of the first column of each piece (first element is always 1). 
+When \code{NULL} (default), splitting is performed automatically.}
 
 \item{ordSplit}{Whether to order the pieces of the split x according to a rule}
 
@@ -56,14 +64,50 @@ The algorithm will work similar to \code{\link{loglin}} when the input x-matrix 
 – as can be created by \code{\link{FormulaSums}}. See Examples.
 }
 \examples{
+
 data2 <- EasyData("z2")
 x <- FormulaSums(data2, ~fylke + kostragr * hovedint - 1)
 z <- t(x) \%*\% data2$ant  # same as FormulaSums(data2, ant~fylke + kostragr * hovedint -1)
 yHat <- Mipf(x, z)
 
 #############################
-# loglin comparison 
+# loglm comparison  
 #############################
+
+if (require(MASS)){
+
+# Increase accuracy
+yHat <- Mipf(x, z, eps = 1e-04)
+
+# Run loglm and store fitted values in a data frame
+outLoglm <- loglm(ant ~ fylke + kostragr * hovedint, data2, eps = 1e-04, iter = 100)
+dfLoglm <- as.data.frame.table(fitted(outLoglm))
+
+# Problem 1: Variable region not in output, but instead the variable .Within.  
+# Problem 2: Extra zeros since hierarchy not treated. Impossible combinations in output.
+
+# By sorting data, it becomes clear that the fitted values are the same.
+max(abs(sort(dfLoglm$Freq, decreasing = TRUE)[1:nrow(data2)] - sort(yHat, decreasing = TRUE)))
+
+# Modify so that region is in output. Problem 1 avoided.
+x <- FormulaSums(data2, ~region + kostragr * hovedint - 1)
+z <- t(x) \%*\% data2$ant  # same as FormulaSums(data2, ant~fylke + kostragr * hovedint -1)
+yHat <- Mipf(x, z, eps = 1e-04)
+outLoglm <- loglm(ant ~ region + kostragr * hovedint, data2, eps = 1e-04, iter = 100)
+dfLoglm <- as.data.frame.table(fitted(outLoglm))
+
+# Now it is possible to merge data
+merg <- merge(cbind(data2, yHat), dfLoglm)
+
+# Identical output
+max(abs(merg$yHat - merg$Freq))
+
+}
+
+#############################
+# loglin comparison  
+#############################
+
 
 # Generate input data for loglin
 n <- 5:9
@@ -99,35 +143,50 @@ max(abs(Mipf(x = FormulaSums(df, ~A:B + C - 1),
 
 
 #########################################
-#  reduceBy0  and  reduceX examples 
+# Examples utilizing Reduce0exact 
 #########################################
 
 #' z3 <- EasyData("z3")
 x <- FormulaSums(z3, ~region + kostragr * hovedint + region * mnd2 + fylke * mnd + 
                      mnd * hovedint + mnd2 * fylke * hovedint - 1)
 
-# Reduction by 0, but no iteration improvement. Identical results.
+# reduceBy0, but no iteration improvement. Identical results.
 t <- 360
 y <- z3$ant
 y[round((1:t) * 432/t)] <- 0
 z <- t(x) \%*\% y
 a1 <- Mipf(x, z, eps = 0.1)
 a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 0.1)
-a3 <- Mipf(x, z, reduceX = TRUE, eps = 0.1)
+a3 <- Mipf(x, z, reduceByColSums = TRUE, eps = 0.1)
 max(abs(a1 - a2))
 max(abs(a1 - a3))
 
 
-# Improvement by reduceX. Changing eps and iter give more similar results.
+# Improvement by reduceByColSums. Changing eps and iter give more similar results.
 t <- 402
 y <- z3$ant
 y[round((1:t) * 432/t)] <- 0
 z <- t(x) \%*\% y
 a1 <- Mipf(x, z, eps = 1)
 a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1)
-a3 <- Mipf(x, z, reduceX = TRUE, eps = 1)
+a3 <- Mipf(x, z, reduceByColSums = TRUE, eps = 1)
 max(abs(a1 - a2))
 max(abs(a1 - a3))
+
+
+# Improvement by ReduceByLeverage. Changing eps and iter give more similar results.
+t <- 378
+y <- z3$ant
+y[round((1:t) * 432/t)] <- 0
+z <- t(x) \%*\% y
+a1 <- Mipf(x, z, eps = 1)
+a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1)
+a3 <- Mipf(x, z, reduceByColSums = TRUE, eps = 1)
+a4 <- Mipf(x, z, reduceByLeverage = TRUE, eps = 1)
+max(abs(a1 - a2))
+max(abs(a1 - a3))
+max(abs(a1 - a4))
+
 
 # Example with small eps and "Iteration stopped since tol reached"
 t <- 384
@@ -136,18 +195,18 @@ y[round((1:t) * 432/t)] <- 0
 z <- t(x) \%*\% y
 a1 <- Mipf(x, z, eps = 1e-14)
 a2 <- Mipf(x, z, reduceBy0 = TRUE, eps = 1e-14)
-a3 <- Mipf(x, z, reduceX = TRUE, eps = 1e-14)
+a3 <- Mipf(x, z, reduceByColSums = TRUE, eps = 1e-14)
 max(abs(a1 - a2))
 max(abs(a1 - a3))
 
-# All y-data found by reduceX (0 iterations). 
+# All y-data found by reduceByColSums (0 iterations). 
 t <- 411
 y <- z3$ant
 y[round((1:t) * 432/t)] <- 0
 z <- t(x) \%*\% y
 a1 <- Mipf(x, z)
 a2 <- Mipf(x, z, reduceBy0 = TRUE)
-a3 <- Mipf(x, z, reduceX = TRUE)
+a3 <- Mipf(x, z, reduceByColSums = TRUE)
 max(abs(a1 - y))
 max(abs(a2 - y))
 max(abs(a3 - y))

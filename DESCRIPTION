@@ -1,12 +1,12 @@
 Package: experimentalRpackage
 Type: Package
 Title: An experimental R package containing experimental/early R functions
-Version: 0.0.2
-Date: 2019-10-28
+Version: 0.0.3
+Date: 2021-01-05
 Authors@R: person("Øyvind", "Langsrud", role = c("aut", "cre"), email = "oyl@ssb.no")
 Author: Øyvind Langsrud [aut, cre]
 Maintainer: Øyvind Langsrud <oyl@ssb.no>
-Depends: Matrix, easySdcTable, RegSDC
+Depends: Matrix
 Imports: SSBtools, CalibrateSSB, methods, MASS, nnls, glmnet
 Suggests: ptable
 Description: This is an experimental R package containing experimental/early R functions.
@@ -15,4 +15,4 @@ LazyData: TRUE
 Encoding: UTF-8
 URL: https://github.com/olangsrud/experimentalRpackage
 BugReports: https://github.com/olangsrud/experimentalRpackage/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
