@@ -211,7 +211,8 @@ Mipf <- function(x, z = NULL, iter = 100, yStart = matrix(1, nrow(x), 1), eps = 
                                  reduceByLeverage = reduceByLeverage,
                                  y = y, yStart = yStart,  printInc =TRUE) 
     
-    #return(a)
+    cat("(",dim(x)[1],"*",dim(x)[2],"->", dim(a$x)[1],"*",dim(a$x)[2],")",sep="")
+    
     if(is.na(returnDetails))
       return(a)
     
